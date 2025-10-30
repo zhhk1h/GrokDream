@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grok梦工厂 - 搞笑Meme工厂 😂</title>
+    <style>
+        /* 统一霓虹科幻主题，自适应 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Arial Black', sans-serif;
+            background: linear-gradient(45deg, #0f0f23, #1a1a3e, #2a1a5e);
+            color: #fff; min-height: 100vh; overflow-x: hidden;
+            animation: bgPulse 10s infinite alternate;
+        }
+        @keyframes bgPulse { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; text-align: center; }
+        h1 { font-size: 3em; text-shadow: 0 0 20px #00ff88; margin: 30px 0; animation: glow 2s infinite; }
+        @keyframes glow { 0%,100%{text-shadow:0 0 20px #00ff88;} 50%{text-shadow:0 0 40px #00ff88;} }
+        .back { position: absolute; top: 20px; left: 20px; color: #00ff88; font-size: 1.2em; text-decoration: none; }
+        .back:hover { text-shadow: 0 0 20px #ff00ff; }
+        .input-group { margin: 30px 0; }
+        input { width: 45%; padding: 15px; font-size: 1.2em; border: 2px solid #00ff88; border-radius: 10px; 
+                background: rgba(0,255,136,0.1); color: #fff; text-align: center; margin: 0 2.5%; }
+        input::placeholder { color: #aaa; }
+        select { padding: 15px; font-size: 1.2em; border: 2px solid #00ff88; border-radius: 10px; 
+                 background: rgba(0,255,136,0.1); color: #fff; margin: 20px; width: 90%; max-width: 500px; }
+        button { padding: 20px 40px; font-size: 1.5em; background: linear-gradient(45deg, #ff00ff, #00ff88);
+                 border: none; border-radius: 50px; color: #000; cursor: pointer; margin: 20px;
+                 transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,255,136,0.5); }
+        button:hover { transform: scale(1.1); box-shadow: 0 20px 50px rgba(255,0,255,0.8); }
+        button:active { transform: scale(0.95); animation: shake 0.5s; }
+        @keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }
+        #memeCanvas { max-width: 100%; height: auto; border: 5px solid #00ff88; border-radius: 20px;
+                       box-shadow: 0 20px 60px rgba(0,0,0,0.8); margin: 20px 0; display: none; }
+        .particles { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 1000; }
+        .particle { position: absolute; width: 10px; height: 10px; background: #00ff88; border-radius: 50%;
+                     pointer-events: none; animation: explode 1s forwards; }
+        @keyframes explode { to { opacity: 0; transform: translateY(-100vh) scale(0); } }
+        footer { margin-top: 50px; font-size: 1.2em; opacity: 0.8; }
+        @media (max-width: 600px) { 
+            h1 { font-size: 2em; } 
+            input { width: 90%; display: block; margin: 10px auto; } 
+            select { width: 95%; }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back">← 返回梦工厂</a>
+    <div class="container">
+        <h1>😂 Grok搞笑Meme工厂</h1>
+        <p style="font-size:1.5em; margin-bottom:30px;">输入文字，一键生成爆笑Meme！AI驱动，手机秒分享</p>
+        
+        <div class="input-group">
+            <input type="text" id="topText" placeholder="上文字 (e.g. Grok太牛)" maxlength="30">
+            <input type="text" id="bottomText" placeholder="下文字 (e.g. 人类哭晕)" maxlength="30">
+        </div>
+        
+        <select id="template">
+            <option value="0">😎 男友分心 (Distracted Boyfriend)</option>
+            <option value="1">👍 成功小子 (Success Kid)</option>
+            <option value="2">🐶 这就行 (This is Fine)</option>
+        </select>
+        
+        <button onclick="generateMeme()">🚀 生成Meme！</button>
+        <button onclick="downloadMeme()" id="downloadBtn" style="display:none;">💾 下载分享</button>
+        
+        <canvas id="memeCanvas" width="600" height="600"></canvas>
+        
+        <footer>© 2025 Grok梦工厂 | <a href="https://grokdream.fun" style="color:#00ff88;">grokdream.fun</a></footer>
+    </div>
+    
+    <div class="particles" id="particles"></div>
+
+    <script>
+        /* JS核心：Canvas实时绘图生成Meme + 粒子爆炸 + 下载 */
+        const canvas = document.getElementById('memeCanvas');
+        const ctx = canvas.getContext('2d');
+        const particlesDiv = document.getElementById('particles');
+        
+        function generateMeme() {
+            const topText = document.getElementById('topText').value.toUpperCase() || 'GROK 太牛';
+            const bottomText = document.getElementById('bottomText').value.toUpperCase() || '人类哭晕';
+            const templateIdx = parseInt(document.getElementById('template').value);
+            
+            /* 清空画布 */
+            ctx.clearRect(0, 0, 600, 600);
+            
+            /* 绘制模板背景 + 人物（3种Meme智能切换） */
+            drawTemplate(ctx, templateIdx);
+            
+            /* 大黑边白字：上/下文字 */
+            ctx.fillStyle = '#000'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 8;
+            ctx.font = 'bold 60px Arial Black'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+            wrapText(ctx, topText, 300, 40, 550, 70);
+            ctx.textBaseline = 'bottom';
+            wrapText(ctx, bottomText, 300, 560, 550, 70);
+            
+            /* 水印 */
+            ctx.fillStyle = '#00ff88'; ctx.font = 'bold 30px Arial'; ctx.textBaseline = 'middle';
+            ctx.fillText('@grokdream.fun', 300, 580);
+            
+            canvas.style.display = 'block';
+            document.getElementById('downloadBtn').style.display = 'inline-block';
+            
+            /* 粒子爆炸特效！ */
+            createParticles(30);
+        }
+        
+        /* 绘制3种Meme模板（纯Canvas，零图片依赖） */
+        function drawTemplate(ctx, idx) {
+            const gradient = ctx.createLinearGradient(0, 0, 600, 600);
+            gradient.addColorStop(0, '#ff6b6b'); gradient.addColorStop(1, '#4ecdc4');
+            ctx.fillStyle = gradient; ctx.fillRect(0, 0, 600, 600);
+            
+            if (idx === 0) { // 😎 男友分心
+                ctx.fillStyle = '#ffd93d'; ctx.beginPath(); ctx.arc(150, 250, 60, 0, Math.PI*2); ctx.fill(); // 女友头
+                ctx.fillRect(130, 310, 40, 80); // 身
+                ctx.fillStyle = '#ff69b4'; ctx.beginPath(); ctx.arc(300, 250, 70, 0, Math.PI*2); ctx.fill(); // 路人
+                ctx.fillRect(280, 320, 40, 100);
+                ctx.fillStyle = '#4169e1'; ctx.beginPath(); ctx.arc(450, 250, 65, 0, Math.PI*2); ctx.fill(); // 男主
+                ctx.fillRect(430, 315, 40, 90);
+            } else if (idx === 1) { // 👍 成功小子
+                ctx.fillStyle = '#d2b48c'; ctx.beginPath(); ctx.arc(300, 350, 80, 0, Math.PI*2); ctx.fill(); // 沙滩
+                ctx.fillStyle = '#8b4513'; ctx.beginPath(); ctx.arc(300, 300, 120, 0, Math.PI*2); ctx.fill(); // 海
+                ctx.fillStyle = '#ffd700'; ctx.beginPath(); ctx.arc(300, 200, 50, 0, Math.PI*2); ctx.fill(); // 头
+                ctx.fillStyle = '#ff4500'; ctx.fillRect(280, 250, 40, 60); // 身
+                ctx.fillStyle = '#ffd700'; ctx.beginPath(); ctx.arc(260, 280, 15, 0, Math.PI*2); ctx.fill(); // 拳头
+            } else { // 🐶 这就行
+                ctx.fillStyle = '#deb887'; ctx.fillRect(100, 200, 400, 300); // 房间
+                ctx.fillStyle = '#8b4513'; ctx.fillRect(150, 350, 300, 100); // 火
+                ctx.fillStyle = '#ffdbac'; ctx.beginPath(); ctx.arc(300, 250, 60, 0, Math.PI*2); ctx.fill(); // 狗头
+                ctx.fillStyle = '#8b7355'; ctx.fillRect(280, 310, 40, 80); // 身
+                ctx.fillStyle = '#4169e1'; ctx.fillRect(350, 320, 30, 50); // 咖啡杯
+            }
+            
+            ctx.strokeStyle = '#fff'; ctx.lineWidth = 5; ctx.strokeRect(20, 20, 560, 560);
+        }
+        
+        /* 文字自动换行 */
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+            const words = text.split(' '); let line = ''; let lines = [];
+            for (let w of words) {
+                const test = line + w + ' '; const metrics = ctx.measureText(test);
+                if (metrics.width > maxWidth && line !== '') { lines.push(line); line = w + ' '; } 
+                else line = test;
+            } lines.push(line);
+            for (let i = 0; i < lines.length; i++) {
+                ctx.strokeText(lines[i], x, y + i * lineHeight);
+                ctx.fillText(lines[i], x, y + i * lineHeight);
+            }
+        }
+        
+        /* 下载PNG */
+        function downloadMeme() {
+            const link = document.createElement('a');
+            link.download = 'grok-meme.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        /* 粒子特效 */
+        function createParticles(count) {
+            for (let i = 0; i < count; i++) {
+                const p = document.createElement('div'); p.className = 'particle';
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.top = '100vh';
+                p.style.animationDelay = Math.random() * 0.5 + 's';
+                particlesDiv.appendChild(p);
+                setTimeout(() => p.remove(), 1000);
+            }
+        }
+        
+        /* 回车快捷生成 */
+        document.addEventListener('keypress', e => { if (e.key === 'Enter') generateMeme(); });
+    </script>
+</body>
+</html>
