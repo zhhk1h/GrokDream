@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grok梦工厂 - AI梦境解读器 🌙</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Arial Black', sans-serif;
+            background: linear-gradient(45deg, #0f0f23, #1a1a3e, #2a1a5e);
+            color: #fff; min-height: 100vh; overflow-x: hidden;
+            animation: bgPulse 10s infinite alternate;
+        }
+        @keyframes bgPulse { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; text-align: center; }
+        h1 { font-size: 3em; text-shadow: 0 0 20px #00ff88; margin: 30px 0; animation: glow 2s infinite; }
+        @keyframes glow { 0%,100%{text-shadow:0 0 20px #00ff88;} 50%{text-shadow:0 0 40px #ff00ff;} }
+        .back { position: absolute; top: 20px; left: 20px; color: #00ff88; font-size: 1.2em; text-decoration: none; }
+        .back:hover { text-shadow: 0 0 20px #ff00ff; }
+        .dream-input { margin: 30px 0; }
+        textarea { width: 90%; max-width: 700px; padding: 20px; font-size: 1.2em; border: 2px solid #00ff88; 
+                   border-radius: 15px; background: rgba(0,255,136,0.1); color: #fff; min-height: 150px;
+                   resize: vertical; font-family: Arial, sans-serif; }
+        textarea::placeholder { color: #aaa; }
+        button { padding: 20px 50px; font-size: 1.5em; background: linear-gradient(45deg, #ff00ff, #00ff88);
+                 border: none; border-radius: 50px; color: #000; cursor: pointer; margin: 20px;
+                 transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,255,136,0.5); font-weight: bold; }
+        button:hover { transform: scale(1.1); box-shadow: 0 20px 50px rgba(255,0,255,0.8); }
+        button:active { transform: scale(0.95); animation: shake 0.5s; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        @keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }
+        .result-box { margin: 40px auto; padding: 30px; background: rgba(0,255,136,0.15); 
+                      border: 3px solid #00ff88; border-radius: 20px; max-width: 800px;
+                      box-shadow: 0 20px 60px rgba(0,255,136,0.3); display: none; text-align: left; }
+        .result-box h2 { color: #00ff88; text-align: center; margin-bottom: 20px; font-size: 2em; }
+        .interpretation { font-size: 1.2em; line-height: 1.8; margin: 20px 0; white-space: pre-wrap; }
+        .symbol-tag { display: inline-block; padding: 8px 15px; background: rgba(255,0,255,0.3);
+                      border-radius: 20px; margin: 5px; font-size: 1em; border: 2px solid #ff00ff; }
+        .loading { display: none; margin: 30px 0; }
+        .spinner { width: 60px; height: 60px; border: 5px solid rgba(0,255,136,0.3);
+                   border-top-color: #00ff88; border-radius: 50%; animation: spin 1s linear infinite;
+                   margin: 0 auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .star { position: absolute; width: 3px; height: 3px; background: #fff; border-radius: 50%;
+                animation: twinkle 3s infinite; }
+        @keyframes twinkle { 0%,100%{opacity:0.3;} 50%{opacity:1;} }
+        footer { margin-top: 50px; font-size: 1.2em; opacity: 0.8; }
+        @media (max-width: 768px) { 
+            h1 { font-size: 2em; } 
+            textarea { width: 95%; font-size: 1em; min-height: 120px; }
+            button { padding: 15px 30px; font-size: 1.2em; }
+            .interpretation { font-size: 1em; }
+        }
+    </style>
+</head>
+<body>
+    <a class='back' href='/'>← 返回梦工厂</a>
+    <div class="stars" id="stars"></div>
+    <div class="container">
+        <h1>🌙 AI梦境解读器</h1>
+        <p style="font-size:1.5em; margin-bottom:30px;">记录你的梦，AI为你揭示潜意识的秘密！</p>
+        
+        <div class="dream-input">
+            <textarea id="dreamText" placeholder="描述你的梦境... 例如：我梦见在海边飞翔，天空是紫色的，突然遇到了一只会说话的猫..."></textarea>
+        </div>
+        
+        <button onclick="interpretDream()" id="interpretBtn">🔮 开始解读</button>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 20px; font-size: 1.3em;">AI正在分析你的梦境...</p>
+        </div>
+        
+        <div class="result-box" id="resultBox">
+            <h2>✨ 梦境解读</h2>
+            <div id="symbols"></div>
+            <div class="interpretation" id="interpretation"></div>
+        </div>
+        
+        <footer>© 2025 Grok梦工厂 | <a href="https://grokdream.fun" style="color:#00ff88;">grokdream.fun</a></footer>
+    </div>
+
+    <script>
+        const starsDiv = document.getElementById('stars');
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsDiv.appendChild(star);
+        }
+
+        const dreamSymbols = {
+            '飞': { name: '飞翔', meaning: '渴望自由、摆脱束缚，或对未来充满希望' },
+            '水': { name: '水/海洋', meaning: '情感的流动，可能代表潜意识或情绪状态' },
+            '追': { name: '被追赶', meaning: '逃避现实压力或内心恐惧' },
+            '掉': { name: '坠落', meaning: '失控感、焦虑或对未知的恐惧' },
+            '死': { name: '死亡', meaning: '结束与新生，象征转变和重生' },
+            '蛇': { name: '蛇', meaning: '智慧、诱惑或潜在威胁' },
+            '猫': { name: '猫', meaning: '独立、神秘或女性能量' },
+            '狗': { name: '狗', meaning: '忠诚、保护或友谊' },
+            '火': { name: '火焰', meaning: '激情、愤怒或转化的力量' },
+            '门': { name: '门', meaning: '机会、选择或新的开始' },
+            '路': { name: '道路', meaning: '人生旅程或未来方向' },
+            '房': { name: '房子', meaning: '自我或内心世界的象征' },
+            '考': { name: '考试', meaning: '自我评价或面临的挑战' },
+            '迷': { name: '迷路', meaning: '方向感缺失或人生困惑' }
+        };
+
+        function interpretDream() {
+            const dreamText = document.getElementById('dreamText').value.trim();
+            
+            if (!dreamText || dreamText.length < 10) {
+                alert('请详细描述你的梦境（至少10个字）！');
+                return;
+            }
+            
+            document.getElementById('interpretBtn').disabled = true;
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultBox').style.display = 'none';
+            
+            setTimeout(() => {
+                const foundSymbols = [];
+                for (let key in dreamSymbols) {
+                    if (dreamText.includes(key)) {
+                        foundSymbols.push(dreamSymbols[key]);
+                    }
+                }
+                
+                const symbolsHtml = foundSymbols.length > 0 
+                    ? '<p style="margin-bottom:15px;"><strong>识别到的梦境符号：</strong></p>' + 
+                      foundSymbols.map(s => `<span class="symbol-tag">${s.name}：${s.meaning}</span>`).join('')
+                    : '<p style="margin-bottom:15px;"><strong>梦境符号：</strong>未识别到典型符号</p>';
+                
+                document.getElementById('symbols').innerHTML = symbolsHtml;
+                
+                const interpretation = generateInterpretation(dreamText, foundSymbols);
+                document.getElementById('interpretation').textContent = interpretation;
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('resultBox').style.display = 'block';
+                document.getElementById('interpretBtn').disabled = false;
+                
+                document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 2000);
+        }
+
+        function generateInterpretation(dreamText, symbols) {
+            const length = dreamText.length;
+            const hasSymbols = symbols.length > 0;
+            
+            let interpretation = '🌟 整体解读：\n\n';
+            
+            if (hasSymbols) {
+                interpretation += '你的梦境包含了多个有意义的象征。';
+                if (dreamText.includes('飞') || dreamText.includes('天')) {
+                    interpretation += '梦中的飞翔或天空意象表明你正寻求突破，渴望超越当前的限制。';
+                }
+                if (dreamText.includes('水') || dreamText.includes('海') || dreamText.includes('河')) {
+                    interpretation += '水元素的出现暗示你的情感世界正在经历流动和变化。';
+                }
+                if (dreamText.includes('追') || dreamText.includes('逃')) {
+                    interpretation += '被追赶的感觉可能反映了现实中的压力或你正在逃避的问题。';
+                }
+            } else {
+                interpretation += '虽然没有明显的经典符号，但你的梦境仍然充满个人意义。';
+            }
+            
+            interpretation += '\n\n💡 深层含义：\n\n';
+            
+            if (length > 100) {
+                interpretation += '你的梦境细节丰富，说明你的潜意识活跃且富有创造力。这可能表明你正处于内心探索的重要时期。';
+            } else if (length > 50) {
+                interpretation += '你的梦境清晰而具体，反映了你对当前生活状态的思考和感受。';
+            } else {
+                interpretation += '简洁的梦境记录也有其独特价值，核心意象往往最能触及真实情感。';
+            }
+            
+            interpretation += '\n\n🎯 建议：\n\n';
+            interpretation += '1. 记录梦境日记，观察重复出现的主题\n';
+            interpretation += '2. 思考梦中元素与现实生活的联系\n';
+            interpretation += '3. 接纳梦境传递的情绪信息\n';
+            interpretation += '4. 如果持续做噩梦，考虑寻求专业心理咨询';
+            
+            interpretation += '\n\n✨ 记住：梦是你内心世界的镜子，最好的解读者永远是你自己！';
+            
+            return interpretation;
+        }
+
+        document.getElementById('dreamText').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                interpretDream();
+            }
+        });
+    </script>
+</body>
+</html>
