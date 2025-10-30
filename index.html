@@ -3,175 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grok梦工厂 - 搞笑Meme工厂 🚀</title>
+    <title>Grok梦工厂 - 科幻冒险岛 🌌</title>
     <style>
-        /* 全站霓虹科幻CSS，自适应手机/电脑 */
+        /* 全站CSS：太空科幻主题，自适应手机/桌面 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Arial Black', sans-serif;
-            background: linear-gradient(45deg, #0f0f23, #1a1a3e, #2a1a5e);
-            color: #fff; min-height: 100vh; overflow-x: hidden;
-            animation: bgPulse 10s infinite alternate;
+            background: linear-gradient(45deg, #000428, #004e92, #000428);
+            color: #00ff88; min-height: 100vh; overflow: hidden;
+            position: relative;
         }
-        @keyframes bgPulse { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
-        .container { max-width: 800px; margin: 0 auto; padding: 20px; text-align: center; }
-        h1 { font-size: 3em; text-shadow: 0 0 20px #00ff88; margin-bottom: 20px; animation: glow 2s infinite; }
-        @keyframes glow { 0%,100%{text-shadow:0 0 20px #00ff88;} 50%{text-shadow:0 0 40px #00ff88;} }
-        .input-group { margin: 30px 0; }
-        input { width: 45%; padding: 15px; font-size: 1.2em; border: 2px solid #00ff88; border-radius: 10px; 
-                background: rgba(0,255,136,0.1); color: #fff; text-align: center; margin: 0 2.5%; }
-        input::placeholder { color: #aaa; }
-        select { padding: 15px; font-size: 1.2em; border: 2px solid #00ff88; border-radius: 10px; 
-                 background: rgba(0,255,136,0.1); color: #fff; margin: 20px; }
-        button { padding: 20px 40px; font-size: 1.5em; background: linear-gradient(45deg, #ff00ff, #00ff88);
-                 border: none; border-radius: 50px; color: #000; cursor: pointer; margin: 20px;
-                 transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,255,136,0.5); }
-        button:hover { transform: scale(1.1); box-shadow: 0 20px 50px rgba(255,0,255,0.8); }
-        button:active { transform: scale(0.95); animation: shake 0.5s; }
-        @keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }
-        #memeCanvas { max-width: 100%; height: auto; border: 5px solid #00ff88; border-radius: 20px;
-                       box-shadow: 0 20px 60px rgba(0,0,0,0.8); margin: 20px 0; display: none; }
-        .particles { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 1000; }
-        .particle { position: absolute; width: 10px; height: 10px; background: #00ff88; border-radius: 50%;
-                     pointer-events: none; animation: explode 1s forwards; }
-        @keyframes explode { to { opacity: 0; transform: translateY(-100vh) scale(0); } }
-        footer { margin-top: 50px; font-size: 1.2em; opacity: 0.8; }
-        @media (max-width: 600px) { 
-            h1 { font-size: 2em; } 
-            input { width: 90%; display: block; margin: 10px auto; } 
+        /* 星空背景动画 */
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="1" fill="white"/><circle cx="90" cy="20" r="0.5" fill="white"/><circle cx="50" cy="80" r="0.8" fill="white"/></svg>') repeat;
+            animation: starsMove 60s linear infinite;
+            z-index: -1;
         }
+        @keyframes starsMove { to { background-position: 100px 100px; } }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; text-align: center; position: relative; z-index: 1; }
+        h1 { font-size: 3em; text-shadow: 0 0 30px #00ff88; margin-bottom: 30px; animation: glow 2s infinite; }
+        @keyframes glow { 0%,100%{text-shadow:0 0 30px #00ff88;} 50%{text-shadow:0 0 60px #ff00ff;} }
+        #story { font-size: 1.5em; margin: 40px 0; min-height: 200px; background: rgba(0,255,136,0.1); 
+                 padding: 30px; border-radius: 20px; border: 2px solid #00ff88; box-shadow: 0 0 50px #00ff88; }
+        .choices { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin: 30px 0; }
+        button { padding: 20px 40px; font-size: 1.3em; background: linear-gradient(45deg, #ff00ff, #00ff88);
+                 border: none; border-radius: 50px; color: #000; cursor: pointer; transition: all 0.3s;
+                 box-shadow: 0 15px 40px rgba(0,255,136,0.5); min-width: 200px; position: relative; overflow: hidden; }
+        button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); transition: 0.5s; }
+        button:hover::before { left: 100%; }
+        button:hover { transform: scale(1.1) rotate(2deg); box-shadow: 0 25px 60px rgba(255,0,255,0.8); }
+        button:active { animation: shake 0.3s; }
+        @keyframes shake { 0%,100%{transform:translateX(0) scale(1.1);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }
+        .particles { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 10; }
+        .particle { position: absolute; width: 4px; height: 4px; background: #fff; border-radius: 50%; animation: fly 5s linear infinite; }
+        @keyframes fly { to { transform: translateY(-100vh) rotate(720deg); opacity: 0; } }
+        footer { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); opacity: 0.7; font-size: 1em; z-index: 1; }
+        @media (max-width: 600px) { h1 { font-size: 2em; } button { width: 90%; margin: 10px 0; } .choices { flex-direction: column; } }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🤖 Grok搞笑Meme工厂</h1>
-        <p style="font-size:1.5em; margin-bottom:30px;">输入文字，一键生成爆笑Meme！AI驱动，手机秒分享</p>
-        
-        <div class="input-group">
-            <input type="text" id="topText" placeholder="上文字 (e.g. Grok太牛)" maxlength="30">
-            <input type="text" id="bottomText" placeholder="下文字 (e.g. 人类哭晕)" maxlength="30">
+        <h1>🌌 Grok科幻冒险岛</h1>
+        <div id="story">
+            🚀 欢迎，太空探险家！<br>
+            你的飞船坠毁在神秘星球...<br>
+            Grok AI 将引导你生存！<br>
+            <strong>💡 提示：按 <kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> 快捷选择，进度自动保存。</strong>
         </div>
-        
-        <select id="template">
-            <option value="0">😎 男友分心 (Distracted Boyfriend)</option>
-            <option value="1">👍 成功小子 (Success Kid)</option>
-            <option value="2">🐶 这就行 (This is Fine)</option>
-        </select>
-        
-        <button onclick="generateMeme()">🚀 生成Meme！</button>
-        <button onclick="downloadMeme()" id="downloadBtn" style="display:none;">💾 下载分享</button>
-        
-        <canvas id="memeCanvas" width="600" height="600"></canvas>
-        
-        <footer>© 2025 Grok梦工厂 | <a href="https://grokdream.fun" style="color:#00ff88;">grokdream.fun</a></footer>
+        <div class="choices" id="choices"></div>
+        <footer>© 2025 Grok梦工厂 | <a href="https://grokdream.fun" style="color:#00ff88;">grokdream.fun</a> | <span id="progress">进度: 起点</span></footer>
     </div>
-    
     <div class="particles" id="particles"></div>
 
     <script>
-        /* JS核心：Canvas实时绘图生成Meme + 粒子爆炸 + 下载 */
-        const canvas = document.getElementById('memeCanvas');
-        const ctx = canvas.getContext('2d');
+        /* ==================== 故事数据 ==================== */
+        const storyData = {
+            0: { text: '飞船坠毁！3条路：<br>🌲森林(资源) | 🕳️洞穴(秘密) | ⛰️山顶(信号)', choices: [
+                { text: '🌲 进森林', next: 1, key: 1 },
+                { text: '🕳️ 探洞穴', next: 2, key: 2 },
+                { text: '⛰️ 爬山顶', next: 3, key: 3 }
+            ]},
+            1: { text: '森林里发现外星果实，吃？', choices: [
+                { text: '🍎 吃果实（冒险）', next: 4, key: 1 },
+                { text: '❌ 扔掉（安全）', next: 5, key: 2 }
+            ]},
+            2: { text: '洞穴深处有发光晶体，拿？', choices: [
+                { text: '💎 拿晶体', next: 6, key: 1 },
+                { text: '🚪 离开', next: 7, key: 2 }
+            ]},
+            3: { text: '山顶看到信号塔，需要能量源启动。', choices: [
+                { text: '🔋 用飞船残骸', next: 8, key: 1 },
+                { text: '🔍 寻找其他能源', next: 9, key: 2 }
+            ]},
+            4: { text: '果实赋予超能力！你打败巨兽，找到救援飞船！🎉 胜利！', choices: [{ text: '🔄 重玩', next: 0, key: 1 }] },
+            5: { text: '安全但饥饿…最终倒下。😭 失败！', choices: [{ text: '🔄 重玩', next: 0, key: 1 }] },
+            6: { text: '晶体是AI核心！它帮助你修复飞船，成功逃脱！🎉 胜利！', choices: [{ text: '🔄 重玩', next: 0, key: 1 }] },
+            7: { text: '离开后被陷阱抓住…😭 失败！', choices: [{ text: '🔄 重玩', next: 0, key: 1 }] },
+            8: { text: '信号塔启动，救援队抵达！🎉 胜利！', choices: [{ text: '🔄 重玩', next: 0, key: 1 }] },
+            9: { text: '找到外星能源，但启动时爆炸…😭 失败！', choices: [{ text: '🔄 重玩', next: 0, key: 1 }] }
+        };
+
+        /* ==================== 全局变量 ==================== */
+        let currentNode = 0;
+        const storyEl = document.getElementById('story');
+        const choicesEl = document.getElementById('choices');
+        const progressEl = document.getElementById('progress');
         const particlesDiv = document.getElementById('particles');
-        
-        function generateMeme() {
-            const topText = document.getElementById('topText').value.toUpperCase() || 'GROK 太牛';
-            const bottomText = document.getElementById('bottomText').value.toUpperCase() || '人类哭晕';
-            const templateIdx = parseInt(document.getElementById('template').value);
-            
-            /* 清空画布 */
-            ctx.clearRect(0, 0, 600, 600);
-            
-            /* 绘制模板背景 + 人物（3种Meme智能切换） */
-            drawTemplate(ctx, templateIdx);
-            
-            /* 大黑边白字：上/下文字 */
-            ctx.fillStyle = '#000'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 8;
-            ctx.font = 'bold 60px Arial Black'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-            wrapText(ctx, topText, 300, 40, 550, 70);
-            ctx.textBaseline = 'bottom';
-            wrapText(ctx, bottomText, 300, 560, 550, 70);
-            
-            /* 水印 */
-            ctx.fillStyle = '#00ff88'; ctx.font = 'bold 30px Arial'; ctx.textBaseline = 'middle';
-            ctx.fillText('@grokdream.fun', 300, 580);
-            
-            canvas.style.display = 'block';
-            document.getElementById('downloadBtn').style.display = 'inline-block';
-            
-            /* 粒子爆炸特效！ */
-            createParticles(30);
+
+        /* ==================== 存档/读档 ==================== */
+        function loadGame() {
+            const saved = localStorage.getItem('grokAdventure');
+            if (saved && storyData[parseInt(saved)]) currentNode = parseInt(saved);
+            render();
         }
-        
-        /* 绘制3种Meme模板（纯Canvas，零图片依赖） */
-        function drawTemplate(ctx, idx) {
-            const gradient = ctx.createLinearGradient(0, 0, 600, 600);
-            gradient.addColorStop(0, '#ff6b6b'); gradient.addColorStop(1, '#4ecdc4');
-            ctx.fillStyle = gradient; ctx.fillRect(0, 0, 600, 600);
-            
-            if (idx === 0) { // 😎 男友分心 
-                // 女友、路人、男主
-                ctx.fillStyle = '#ffd93d'; ctx.beginPath(); ctx.arc(150, 250, 60, 0, Math.PI*2); ctx.fill(); // 女友头
-                ctx.fillRect(130, 310, 40, 80); // 身
-                ctx.fillStyle = '#ff69b4'; ctx.beginPath(); ctx.arc(300, 250, 70, 0, Math.PI*2); ctx.fill(); // 路人
-                ctx.fillRect(280, 320, 40, 100);
-                ctx.fillStyle = '#4169e1'; ctx.beginPath(); ctx.arc(450, 250, 65, 0, Math.PI*2); ctx.fill(); // 男主
-                ctx.fillRect(430, 315, 40, 90);
-            } else if (idx === 1) { // 👍 成功小子
-                ctx.fillStyle = '#d2b48c'; ctx.beginPath(); ctx.arc(300, 350, 80, 0, Math.PI*2); ctx.fill(); // 沙滩
-                ctx.fillStyle = '#8b4513'; ctx.beginPath(); ctx.arc(300, 300, 120, 0, Math.PI*2); ctx.fill(); // 海
-                ctx.fillStyle = '#ffd700'; ctx.beginPath(); ctx.arc(300, 200, 50, 0, Math.PI*2); ctx.fill(); // 头
-                ctx.fillStyle = '#ff4500'; ctx.fillRect(280, 250, 40, 60); // 身
-                // 拳头👍
-                ctx.fillStyle = '#ffd700'; ctx.beginPath(); ctx.arc(260, 280, 15, 0, Math.PI*2); ctx.fill();
-            } else { // 🐶 这就行
-                ctx.fillStyle = '#deb887'; ctx.fillRect(100, 200, 400, 300); // 房间
-                ctx.fillStyle = '#8b4513'; ctx.fillRect(150, 350, 300, 100); // 火
-                ctx.fillStyle = '#ffdbac'; ctx.beginPath(); ctx.arc(300, 250, 60, 0, Math.PI*2); ctx.fill(); // 狗头
-                ctx.fillStyle = '#8b7355'; ctx.fillRect(280, 310, 40, 80); // 身
-                // 咖啡杯
-                ctx.fillStyle = '#4169e1'; ctx.fillRect(350, 320, 30, 50);
-            }
-            
-            ctx.strokeStyle = '#fff'; ctx.lineWidth = 5; ctx.strokeRect(20, 20, 560, 560);
+        function saveGame() {
+            localStorage.setItem('grokAdventure', currentNode);
         }
-        
-        /* 文字自动换行 */
-        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-            const words = text.split(' '); let line = ''; let lines = [];
-            for (let w of words) {
-                const test = line + w + ' '; const metrics = ctx.measureText(test);
-                if (metrics.width > maxWidth && line !== '') { lines.push(line); line = w + ' '; } 
-                else line = test;
-            } lines.push(line);
-            for (let i = 0; i < lines.length; i++) {
-                ctx.strokeText(lines[i], x, y + i * lineHeight);
-                ctx.fillText(lines[i], x, y + i * lineHeight);
-            }
+
+        /* ==================== 渲染 ==================== */
+        function render() {
+            const node = storyData[currentNode];
+            storyEl.innerHTML = node.text;
+            choicesEl.innerHTML = '';
+            progressEl.textContent = `进度: ${currentNode === 0 ? '起点' : '第 ' + currentNode + ' 步'}`;
+
+            node.choices.forEach((choice, idx) => {
+                const btn = document.createElement('button');
+                btn.textContent = choice.text + (choice.key ? ` [${choice.key}]` : '');
+                btn.onclick = () => goTo(choice.next);
+                choicesEl.appendChild(btn);
+            });
         }
-        
-        /* 下载PNG */
-        function downloadMeme() {
-            const link = document.createElement('a');
-            link.download = 'grok-meme.png';
-            link.href = canvas.toDataURL();
-            link.click();
+
+        function goTo(next) {
+            currentNode = next;
+            saveGame();
+            createParticles(40);
+            render();
         }
-        
-        /* 粒子特效 */
+
+        /* ==================== 粒子特效 ==================== */
         function createParticles(count) {
             for (let i = 0; i < count; i++) {
-                const p = document.createElement('div'); p.className = 'particle';
+                const p = document.createElement('div');
+                p.className = 'particle';
                 p.style.left = Math.random() * 100 + 'vw';
-                p.style.top = '100vh';
+                p.style.animationDuration = (Math.random() * 3 + 2) + 's';
                 p.style.animationDelay = Math.random() * 0.5 + 's';
                 particlesDiv.appendChild(p);
-                setTimeout(() => p.remove(), 1000);
+                setTimeout(() => p.remove(), 5000);
             }
         }
-        
-        /* 回车快捷生成 */
-        document.addEventListener('keypress', e => { if (e.key === 'Enter') generateMeme(); });
+
+        /* ==================== 键盘快捷 ==================== */
+        document.addEventListener('keydown', e => {
+            const key = parseInt(e.key);
+            if (!isNaN(key) && key >= 1 && key <= 3) {
+                const node = storyData[currentNode];
+                const choice = node.choices.find(c => c.key === key);
+                if (choice) goTo(choice.next);
+            }
+        });
+
+        /* ==================== 初始化 ==================== */
+        loadGame();
+        setInterval(() => createParticles(3), 1500);   // 背景星空
     </script>
 </body>
 </html>
